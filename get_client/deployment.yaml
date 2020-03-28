@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gvr-get-client
+  labels:
+    name: gvr-get-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: gvr-get-client
+  template:
+    metadata:
+      labels:
+        name: gvr-get-client
+      # annotations:
+      #   dapr.io/enabled: "true"
+      #   dapr.io/id: "gvr-get-client"
+      #   dapr.io/port: "3000"
+    spec:
+      containers:
+      - name: gvr-get-client
+        image: IMG
+        ports:
+          - containerPort: 3000
+        env:
+          - name: PORTAL_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: portal-credentials
+                key: token
+          - name: PORTAL_URL
+            valueFrom:
+              secretKeyRef:
+                name: portal-credentials
+                key: url                                   
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: gvr-get-client
+  name: gvr-get-client
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    name: gvr-get-client
+  type: ClusterIP

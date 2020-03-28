@@ -44,3 +44,9 @@ type portalClient struct {
 	BelongsToReseller     bool        `json:"belongs_to_reseller"`
 	ResellerClientDetails interface{} `json:"reseller_client_details"`
 }
+
+type getUserResp struct {
+	PortalID    string `json:"portal_id"`
+	PortalName  string `json:"portal_name"`
+	PortalEmail string `json:"portal_email"`
+}
