@@ -3,10 +3,10 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -64,6 +64,7 @@ func main() {
 	}
 
 	log.Fatal(srv.ListenAndServe())
+
 }
 
 func messageHandler(w http.ResponseWriter, r *http.Request) {
@@ -80,26 +81,25 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalln(err)
 	}
 
-	// msg := ParseTemplate(message, mail)error{
-	// 	t, err := template.ParseFiles(templateFileName)
-	// 	if err != nil {
-	// 		return err
-	// 	}
-	// 	buf := new(bytes.Buffer)
-	// 	if err = t.Execute(buf, mail); err != nil {
-	// 		return err
-	// 	}
-	// 	r.body = buf.String()
-	// 	return nil
-	// }
-
-	// mime := "MIME-version: 1.0;\nContent-Type: html/plain; charset=\"UTF-8\";\n\n"
+	templateFileName := "message.html"
 
 	subject := "Ventus Cloud Support - Governor"
 
-	msg := "Dear User. We would like to inform you, that on project: " + data.Data.Name +
-		" you have passed treshhold in 60% of " + data.Data.QuotaName + " and using " + strconv.Itoa(data.Data.Current) +
-		" of " + strconv.Itoa(data.Data.Max) + " cores. If you want, you can scale up your resources here."
+	// msg := "Dear User. We would like to inform you, that on project: " + data.Data.Name +
+	// 	" you have passed treshhold in 60% of " + data.Data.QuotaName + " and using " + strconv.Itoa(data.Data.Current) +
+	// 	" of " + strconv.Itoa(data.Data.Max) + " cores. If you want, you can scale up your resources here."
+
+	t, err := template.ParseFiles(templateFileName)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	buf := new(bytes.Buffer)
+	if err = t.Execute(buf, data.Data); err != nil {
+		log.Fatalln(err)
+	}
+
+	msg := buf.String()
 
 	d := mail{
 		From:    "dmitriy.yarovoy@ventus.ag",
