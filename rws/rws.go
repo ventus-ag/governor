@@ -23,20 +23,17 @@ var (
 )
 
 type data struct {
-	MaxCores           int    `json:"maxCores"`
-	CurrentCores       int    `json:"currentCores"`
-	Treshold           int    `json:"treshold"`
-	CoresQuotaName     string `json:"cores_quota_name"`
-	RAMQuotaName       string `json:"ram_quota_name"`
-	InstancesQuotaName string `json:"instances_quota_name"`
-	Email              string `json:"email"`
-	ID                 string `json:"id"`
-	Name               string `json:"name"`
-	Date               string `json:"date"`
-	MaxRAM             int    `json:"maxRam"`
-	CurrentRAM         int    `json:"currentRam"`
-	MaxInstances       int    `json:"maxInstances"`
-	CurrentInstances   int    `json:"currentInstances"`
+	MaxCores         int    `json:"maxCores"`
+	CurrentCores     int    `json:"currentCores"`
+	Treshold         int    `json:"treshold"`
+	Email            string `json:"email"`
+	ID               string `json:"id"`
+	Name             string `json:"name"`
+	Date             string `json:"date"`
+	MaxRAM           int    `json:"maxRam"`
+	CurrentRAM       int    `json:"currentRam"`
+	MaxInstances     int    `json:"maxInstances"`
+	CurrentInstances int    `json:"currentInstances"`
 }
 
 type email struct {
@@ -79,30 +76,29 @@ func main() {
 			}
 			limits := getLimits(project.ID)
 			d := data{
-				MaxCores:           limits.MaxTotalCores,
-				CurrentCores:       limits.TotalCoresUsed,
-				Treshold:           60,
-				CoresQuotaName:     "Cores",
-				RAMQuotaName:       "RAM",
-				InstancesQuotaName: "Instances",
-				Name:               project.Name,
-				Email:              "masterhorn89@gmail.com",
-				ID:                 project.ID,
-				Date:               time.Now().Format(layoutUS),
-				MaxRAM:             limits.MaxTotalRAMSize,
-				CurrentRAM:         limits.TotalRAMUsed,
-				MaxInstances:       limits.MaxTotalInstances,
-				CurrentInstances:   limits.TotalInstancesUsed,
+				MaxCores:         limits.MaxTotalCores,
+				CurrentCores:     limits.TotalCoresUsed,
+				Treshold:         60,
+				Name:             project.Name,
+				Email:            "masterhorn89@gmail.com",
+				ID:               project.ID,
+				Date:             time.Now().Format(layoutUS),
+				MaxRAM:           limits.MaxTotalRAMSize,
+				CurrentRAM:       limits.TotalRAMUsed,
+				MaxInstances:     limits.MaxTotalInstances,
+				CurrentInstances: limits.TotalInstancesUsed,
 			}
 
 			// FOR TROUBLESHOOTING
 			if d.ID == "292d78952e584d25b0c71deb2eb06d55" {
 				d.CurrentCores = 30
+				d.CurrentRAM = 40000
+				d.CurrentInstances = 8
 			}
 
 			// CPU
-			if verifyTresholdCores(d.MaxCores, d.CurrentCores, d.Treshold) {
-				log.Println("Treshold reached for: " + d.ID)
+			if verifyTreshold(d.MaxCores, d.CurrentCores, d.Treshold) {
+				log.Println("CPU treshold reached for: " + d.ID)
 				if projectGetState(d.ID, "cpu") == false {
 					log.Println("Sending email for: " + d.ID)
 					projectSaveState(d.ID, true, "cpu")
@@ -121,15 +117,15 @@ func main() {
 					log.Println("Email were already sent for: " + d.ID)
 				}
 			} else {
-				log.Println("Treshold not reached for: " + d.ID)
+				log.Println("CPU treshold not reached for: " + d.ID)
 				if projectGetState(d.ID, "cpu") == true {
 					log.Println("Reseting indicator of sent email for: " + d.ID)
 					projectSaveState(d.ID, false, "cpu")
 				}
 			}
 			// RAM
-			if verifyTresholdRAM(d.MaxRAM, d.CurrentRAM, d.Treshold) {
-				log.Println("Treshold reached for: " + d.ID)
+			if verifyTreshold(d.MaxRAM, d.CurrentRAM, d.Treshold) {
+				log.Println("RAM treshold reached for: " + d.ID)
 				if projectGetState(d.ID, "RAM") == false {
 					log.Println("Sending email for: " + d.ID)
 					projectSaveState(d.ID, true, "RAM")
@@ -148,15 +144,15 @@ func main() {
 					log.Println("Email were already sent for: " + d.ID)
 				}
 			} else {
-				log.Println("Treshold not reached for: " + d.ID)
+				log.Println("RAM treshold not reached for: " + d.ID)
 				if projectGetState(d.ID, "RAM") == true {
 					log.Println("Reseting indicator of sent email for: " + d.ID)
 					projectSaveState(d.ID, false, "RAM")
 				}
 			}
 			// INSTANCES
-			if verifyTresholdInstances(d.MaxInstances, d.CurrentInstances, d.Treshold) {
-				log.Println("Treshold reached for: " + d.ID)
+			if verifyTreshold(d.MaxInstances, d.CurrentInstances, d.Treshold) {
+				log.Println("Instances treshold reached for: " + d.ID)
 				if projectGetState(d.ID, "Instances") == false {
 					log.Println("Sending email for: " + d.ID)
 					projectSaveState(d.ID, true, "Instances")
@@ -175,7 +171,7 @@ func main() {
 					log.Println("Email were already sent for: " + d.ID)
 				}
 			} else {
-				log.Println("Treshold not reached for: " + d.ID)
+				log.Println("Instances treshold not reached for: " + d.ID)
 				if projectGetState(d.ID, "Instances") == true {
 					log.Println("Reseting indicator of sent email for: " + d.ID)
 					projectSaveState(d.ID, false, "Instances")
@@ -211,34 +207,11 @@ func publish(e email) {
 	defer resp.Body.Close()
 }
 
-// CORES TRESHOLD
-func verifyTresholdCores(maxCores int, currentCores int, treshold int) bool {
+func verifyTreshold(max int, current int, treshold int) bool {
 
-	x := (maxCores * treshold) / 100
+	x := (max * treshold) / 100
 
-	if currentCores >= x {
-		return true
-	}
-	return false
-}
-
-// RAM TRESHOLD
-func verifyTresholdRAM(maxRAM int, currentRAM int, treshold int) bool {
-
-	x := (maxRAM * treshold) / 100
-
-	if currentRAM >= x {
-		return true
-	}
-	return false
-}
-
-// INSTANCES TRESHOLD
-func verifyTresholdInstances(maxInstances int, currentInstances int, treshold int) bool {
-
-	x := (maxInstances * treshold) / 100
-
-	if currentInstances >= x {
+	if current >= x {
 		return true
 	}
 	return false
