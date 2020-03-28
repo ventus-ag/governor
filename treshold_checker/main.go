@@ -81,6 +81,8 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalln(err)
 	}
 
+	log.Println("New message - creating msg")
+
 	templateFileName := "message.html"
 
 	subject := "Ventus Cloud Support - Governor"
@@ -100,6 +102,7 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	msg := buf.String()
+	log.Println("New msg:", msg)
 
 	d := mail{
 		From:    "dmitriy.yarovoy@ventus.ag",
@@ -114,6 +117,7 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
+	log.Println("Published new e-mail")
 }
 
 func publish(d mail) {
