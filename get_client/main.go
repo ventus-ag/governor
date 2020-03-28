@@ -17,12 +17,6 @@ var token = os.Getenv("PORTAL_TOKEN")
 var basePortalURL = os.Getenv("PORTAL_URL")
 var ren = render.New()
 
-type getUserResp struct {
-	PortalID    string `json:"portal_id"`
-	PortalName  string `json:"portal_name"`
-	PortalEmail string `json:"portal_email"`
-}
-
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/get", get).Queries("name", "{name}").Methods("GET")
@@ -41,9 +35,8 @@ func get(w http.ResponseWriter, r *http.Request) {
 		name = name + fields[i] + " "
 	}
 	name = strings.TrimSuffix(name, " ")
-	log.Println(id)
-	log.Println(name)
 	resp := getClient(id)
+	log.Println(resp)
 
 	w.Header().Set("Content-Type", "application/json")
 	ren.JSON(w, http.StatusOK, resp)
