@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-service
+  labels:
+    name: test-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: test-service
+  template:
+    metadata:
+      labels:
+        name: test-service
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/id: "test-service"
+    spec:
+      containers:
+      - name: test-service
+        image: IMG
+        imagePullPolicy: Always

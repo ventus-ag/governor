@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: treshhold-checker
+  labels:
+    name: treshhold-checker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: treshhold-checker
+  template:
+    metadata:
+      labels:
+        name: treshhold-checker
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/id: "treshhold-checker"
+        dapr.io/port: "8080"
+    spec:
+      containers:
+      - name: treshhold-checker
+        image: IMG
+        env:
+          - name: VENTUS_EMAIL_PASSWORD
+            valueFrom:
+               secretKeyRef:
+                 name: ventus-email-password
+                 key: ventus-email-password        
+        ports:
+        - containerPort: 8080
+        imagePullPolicy: Always

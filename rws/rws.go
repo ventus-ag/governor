@@ -1,0 +1,367 @@
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"os"
+	"time"
+
+	"github.com/gophercloud/gophercloud"
+	"github.com/gophercloud/gophercloud/openstack"
+	"github.com/gophercloud/gophercloud/openstack/compute/v2/extensions/limits"
+	"github.com/gophercloud/gophercloud/openstack/identity/v3/projects"
+)
+
+var (
+	layoutUS       = "January 2, 2006, 15:04:05"
+	topic          = "cpu"
+	stateStoreName = "statestore"
+	stateURL       = "http://localhost:3500/v1.0/state/" + stateStoreName
+)
+
+type data struct {
+	MaxCores           int    `json:"maxCores"`
+	CurrentCores       int    `json:"currentCores"`
+	Treshold           int    `json:"treshold"`
+	CoresQuotaName     string `json:"cores_quota_name"`
+	RAMQuotaName       string `json:"ram_quota_name"`
+	InstancesQuotaName string `json:"instances_quota_name"`
+	Email              string `json:"email"`
+	ID                 string `json:"id"`
+	Name               string `json:"name"`
+	Date               string `json:"date"`
+	MaxRAM             int    `json:"maxRam"`
+	CurrentRAM         int    `json:"currentRam"`
+	MaxInstances       int    `json:"maxInstances"`
+	CurrentInstances   int    `json:"currentInstances"`
+}
+
+type email struct {
+	Max       int    `json:"maxCores"`
+	Current   int    `json:"currentCores"`
+	Treshold  int    `json:"treshold"`
+	QuotaName string `json:"quota_name"`
+	Email     string `json:"email"`
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Date      string `json:"date"`
+}
+
+type state struct {
+	Key   string     `json:"key"`
+	Value stateValue `json:"value"`
+}
+
+type stateValue struct {
+	Mail bool   `json:"mail"`
+	Date string `json:"date"`
+}
+
+var openstackOpts = gophercloud.AuthOptions{
+	IdentityEndpoint: os.Getenv("OPENSTACK_IDENTITY_ENDPOINT"),
+	DomainName:       "Default",
+	TenantName:       os.Getenv("OPENSTACK_TENANT_NAME"),
+	Username:         os.Getenv("OPENSTACK_USERNAME"),
+	Password:         os.Getenv("OPENSTACK_PASSWORD"),
+}
+
+func main() {
+
+	for true {
+		projects := getAllProjects()
+		for _, project := range projects {
+			// // FOR TROUBLESHOOTING
+			if project.ID != "292d78952e584d25b0c71deb2eb06d55" {
+				continue
+			}
+			limits := getLimits(project.ID)
+			d := data{
+				MaxCores:           limits.MaxTotalCores,
+				CurrentCores:       limits.TotalCoresUsed,
+				Treshold:           60,
+				CoresQuotaName:     "Cores",
+				RAMQuotaName:       "RAM",
+				InstancesQuotaName: "Instances",
+				Name:               project.Name,
+				Email:              "masterhorn89@gmail.com",
+				ID:                 project.ID,
+				Date:               time.Now().Format(layoutUS),
+				MaxRAM:             limits.MaxTotalRAMSize,
+				CurrentRAM:         limits.TotalRAMUsed,
+				MaxInstances:       limits.MaxTotalInstances,
+				CurrentInstances:   limits.TotalInstancesUsed,
+			}
+
+			// FOR TROUBLESHOOTING
+			if d.ID == "292d78952e584d25b0c71deb2eb06d55" {
+				d.CurrentCores = 30
+			}
+
+			// CPU
+			if verifyTresholdCores(d.MaxCores, d.CurrentCores, d.Treshold) {
+				log.Println("Treshold reached for: " + d.ID)
+				if projectGetState(d.ID, "cpu") == false {
+					log.Println("Sending email for: " + d.ID)
+					projectSaveState(d.ID, true, "cpu")
+					e := email{
+						Max:       d.MaxCores,
+						Current:   d.CurrentCores,
+						Treshold:  60,
+						QuotaName: "Cores",
+						Name:      project.Name,
+						Email:     "masterhorn89@gmail.com",
+						ID:        project.ID,
+						Date:      time.Now().Format(layoutUS),
+					}
+					publish(e)
+				} else {
+					log.Println("Email were already sent for: " + d.ID)
+				}
+			} else {
+				log.Println("Treshold not reached for: " + d.ID)
+				if projectGetState(d.ID, "cpu") == true {
+					log.Println("Reseting indicator of sent email for: " + d.ID)
+					projectSaveState(d.ID, false, "cpu")
+				}
+			}
+			// RAM
+			if verifyTresholdRAM(d.MaxRAM, d.CurrentRAM, d.Treshold) {
+				log.Println("Treshold reached for: " + d.ID)
+				if projectGetState(d.ID, "RAM") == false {
+					log.Println("Sending email for: " + d.ID)
+					projectSaveState(d.ID, true, "RAM")
+					e := email{
+						Max:       d.MaxRAM,
+						Current:   d.CurrentRAM,
+						Treshold:  60,
+						QuotaName: "RAM",
+						Name:      project.Name,
+						Email:     "masterhorn89@gmail.com",
+						ID:        project.ID,
+						Date:      time.Now().Format(layoutUS),
+					}
+					publish(e)
+				} else {
+					log.Println("Email were already sent for: " + d.ID)
+				}
+			} else {
+				log.Println("Treshold not reached for: " + d.ID)
+				if projectGetState(d.ID, "RAM") == true {
+					log.Println("Reseting indicator of sent email for: " + d.ID)
+					projectSaveState(d.ID, false, "RAM")
+				}
+			}
+			// INSTANCES
+			if verifyTresholdInstances(d.MaxInstances, d.CurrentInstances, d.Treshold) {
+				log.Println("Treshold reached for: " + d.ID)
+				if projectGetState(d.ID, "Instances") == false {
+					log.Println("Sending email for: " + d.ID)
+					projectSaveState(d.ID, true, "Instances")
+					e := email{
+						Max:       d.MaxInstances,
+						Current:   d.CurrentInstances,
+						Treshold:  60,
+						QuotaName: "Instances",
+						Name:      project.Name,
+						Email:     "masterhorn89@gmail.com",
+						ID:        project.ID,
+						Date:      time.Now().Format(layoutUS),
+					}
+					publish(e)
+				} else {
+					log.Println("Email were already sent for: " + d.ID)
+				}
+			} else {
+				log.Println("Treshold not reached for: " + d.ID)
+				if projectGetState(d.ID, "Instances") == true {
+					log.Println("Reseting indicator of sent email for: " + d.ID)
+					projectSaveState(d.ID, false, "Instances")
+				}
+			}
+		}
+		log.Println("END")
+		time.Sleep(time.Minute * 30)
+	}
+}
+
+func publish(e email) {
+	body, err := json.Marshal(e)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	URL := "http://localhost:3500/v1.0/publish/" + topic
+	req, err := http.NewRequest("POST", URL, bytes.NewBuffer(body))
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer resp.Body.Close()
+}
+
+// CORES TRESHOLD
+func verifyTresholdCores(maxCores int, currentCores int, treshold int) bool {
+
+	x := (maxCores * treshold) / 100
+
+	if currentCores >= x {
+		return true
+	}
+	return false
+}
+
+// RAM TRESHOLD
+func verifyTresholdRAM(maxRAM int, currentRAM int, treshold int) bool {
+
+	x := (maxRAM * treshold) / 100
+
+	if currentRAM >= x {
+		return true
+	}
+	return false
+}
+
+// INSTANCES TRESHOLD
+func verifyTresholdInstances(maxInstances int, currentInstances int, treshold int) bool {
+
+	x := (maxInstances * treshold) / 100
+
+	if currentInstances >= x {
+		return true
+	}
+	return false
+}
+
+func getLimits(id string) limits.Absolute {
+	provider, err := openstack.AuthenticatedClient(openstackOpts)
+	if err != nil {
+		log.Fatalf("Error with authentication provider from gophercloud/openstack: %s\n", err)
+	}
+
+	epOpts := gophercloud.EndpointOpts{
+		Region: os.Getenv("OPENSTACK_REGION_NAME"),
+	}
+
+	clientCompute, err := openstack.NewComputeV2(provider, epOpts)
+	if err != nil {
+		log.Fatalf("Error with getting compute: %s\n", err)
+	}
+
+	getOpts := limits.GetOpts{
+		TenantID: id,
+	}
+
+	limits, err := limits.Get(clientCompute, getOpts).Extract()
+	if err != nil {
+		log.Fatalf("Error with getting quotas: %s\n", err)
+	}
+
+	return limits.Absolute
+}
+
+func getAllProjects() []projects.Project {
+	provider, err := openstack.AuthenticatedClient(openstackOpts)
+	if err != nil {
+		log.Fatalf("Error with authentication provider from gophercloud/openstack: %s\n", err)
+	}
+
+	epOpts := gophercloud.EndpointOpts{
+		Region: os.Getenv("OPENSTACK_REGION_NAME"),
+	}
+
+	clientProject, err := openstack.NewIdentityV3(provider, epOpts)
+	if err != nil {
+		log.Fatalf("Error with getting compute: %s\n", err)
+	}
+
+	listOpts := projects.ListOpts{
+		Enabled: gophercloud.Enabled,
+	}
+
+	allpj, err := projects.List(clientProject, listOpts).AllPages()
+	if err != nil {
+		panic(err)
+	}
+
+	allProjects, err := projects.ExtractProjects(allpj)
+	if err != nil {
+		panic(err)
+	}
+	return allProjects
+}
+
+func projectGetState(id string, quota string) bool {
+	req, err := http.NewRequest("GET", stateURL+"/"+quota+"_"+id, nil)
+	if err != nil {
+		log.Fatalln("projectGetState - new request: ", err)
+	}
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln("projectGetState - do request: ", err)
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	if string(bodyBytes) == "" {
+		return false
+	}
+	var sV stateValue
+	err = json.Unmarshal(bodyBytes, &sV)
+	if err != nil {
+		log.Fatalln("projectGetState - unmarshal: ", err)
+	}
+	// log.Println(sV)
+	return sV.Mail
+}
+
+func projectSaveState(id string, mail bool, quota string) {
+
+	sV := stateValue{
+		Mail: mail,
+		Date: time.Now().Format(layoutUS),
+	}
+
+	s := state{
+		Key:   quota + "_" + id,
+		Value: sV,
+	}
+
+	states := []state{s}
+
+	jsonS, err := json.Marshal(states)
+	if err != nil {
+		log.Fatalln("projectSaveState - marshal: ", err)
+	}
+
+	req, err := http.NewRequest("POST", stateURL, bytes.NewBuffer(jsonS))
+	if err != nil {
+		log.Fatalln("projectSaveState - new request: ", err)
+	}
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln("projectSaveState - do request: ", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == 201 {
+		log.Println("Successfully persisted state.")
+	}
+}

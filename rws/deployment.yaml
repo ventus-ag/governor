@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gvr-rws
+  labels:
+    name: gvr-rws
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: gvr-rws
+  template:
+    metadata:
+      labels:
+        name: gvr-rws
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/id: "gvr-rws"
+    spec:
+      containers:
+      - name: gvr-rws
+        image: IMG
+        env:
+          - name: OPENSTACK_IDENTITY_ENDPOINT
+            valueFrom:
+              secretKeyRef:
+                name: openstack-credentials
+                key: openstack-identity-endpoint
+          - name: OPENSTACK_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: openstack-credentials
+                key: openstack-password
+          - name: OPENSTACK_TENANT_NAME
+            valueFrom:
+              secretKeyRef:
+                name: openstack-credentials
+                key: openstack-tenant-name
+          - name: OPENSTACK_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: openstack-credentials
+                key: openstack-username
+          - name: OPENSTACK_REGION_NAME
+            valueFrom:
+              secretKeyRef:
+                name: openstack-credentials
+                key: openstack-region-name                                    
+        imagePullPolicy: Always
