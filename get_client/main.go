@@ -14,9 +14,7 @@ import (
 )
 
 var token = os.Getenv("PORTAL_TOKEN")
-var basePortalURL = "https://sportal.ventuscloud.eu/backend/staffapi/"
-var testProjectName = "Ventus AG Tutorials - 60218"
-
+var basePortalURL = os.Getenv("PORTAL_URL")
 var ren = render.New()
 
 type getUserResp struct {
