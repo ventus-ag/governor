@@ -354,13 +354,13 @@ func getEmail(name string) string {
 	URL := projectURL + name
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("getEmail: Error creating request", err)
 	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("getEmail: Error sending http request", err)
 	}
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
@@ -368,7 +368,7 @@ func getEmail(name string) string {
 	var g getUserResp
 	err = json.Unmarshal(bodyBytes, &g)
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("getEmail: Error with unmarshaling response", err)
 	}
 	userEmail := g.PortalEmail
 	return userEmail
