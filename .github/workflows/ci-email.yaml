@@ -8,6 +8,7 @@ on:
     - '.github/workflows/ci-email.yaml'
 
 jobs:
+
 #building app
   build:
     runs-on: ubuntu-latest
@@ -34,7 +35,7 @@ jobs:
       with:
         method: kubeconfig
         kubeconfig: ${{ secrets.KUBE_CONFIG }}
-      id: setcontext
+      id: setcontext    
     - name: Set imagePullSecret
       uses: azure/k8s-create-secret@v1
       with:
@@ -43,13 +44,13 @@ jobs:
         container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
         container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
         secret-name: 'docker-registry-secret'
-      id: create-secret
+      id: create-secret   
     - name: Set OpenstackPullSecrets
       uses: azure/k8s-create-secret@v1
       with:
         namespace: 'default'
         secret-type: 'generic'
-        arguments: --from-literal=email-address=${{ secrets.VENTUS_EMAIL }} --from-literal=email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }}
+        arguments:  --from-literal=email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }} --from-literal=email-address=${{ secrets.VENTUS_EMAIL }}
         secret-name: email-credentials
     - name: Deploy
       run: |
@@ -60,5 +61,3 @@ jobs:
         sed -i "s,IMG,${DOCKER_URL},g" deployment.yaml
         kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "docker-registry-secret"}]}'
         kubectl apply -f deployment.yaml
-
-        
