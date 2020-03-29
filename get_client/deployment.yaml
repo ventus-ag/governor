@@ -13,10 +13,10 @@ spec:
     metadata:
       labels:
         name: gvr-get-client
-      # annotations:
-      #   dapr.io/enabled: "true"
-      #   dapr.io/id: "gvr-get-client"
-      #   dapr.io/port: "3000"
+      annotations:
+        dapr.io/enabled: "true"
+        dapr.io/id: "gvr-get-client"
+        dapr.io/port: "3000"
     spec:
       containers:
       - name: gvr-get-client
@@ -35,18 +35,18 @@ spec:
                 name: portal-credentials
                 key: url                                   
         imagePullPolicy: Always
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    name: gvr-get-client
-  name: gvr-get-client
-spec:
-  ports:
-  - port: 80
-    protocol: TCP
-    targetPort: 3000
-  selector:
-    name: gvr-get-client
-  type: ClusterIP
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   labels:
+#     name: gvr-get-client
+#   name: gvr-get-client
+# spec:
+#   ports:
+#   - port: 80
+#     protocol: TCP
+#     targetPort: 3000
+#   selector:
+#     name: gvr-get-client
+#   type: ClusterIP
