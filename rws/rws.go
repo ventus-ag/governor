@@ -85,13 +85,18 @@ func main() {
 			userEmail := getEmail(project.Name)
 			log.Println(userEmail)
 
+			if userEmail == "" {
+				log.Println("There is no e-mail for this Project, skipping")
+				continue
+			}
+
 			limits := getLimits(project.ID)
 			d := data{
 				MaxCores:         limits.MaxTotalCores,
 				CurrentCores:     limits.TotalCoresUsed,
 				Treshold:         60,
 				Name:             project.Name,
-				Email:            "masterhorn89@gmail.com",
+				Email:            userEmail,
 				ID:               project.ID,
 				Date:             time.Now().Format(layoutUS),
 				MaxRAM:           limits.MaxTotalRAMSize,
@@ -356,7 +361,7 @@ func getEmail(name string) string {
 	if err != nil {
 		log.Fatalln("getEmail: Error creating request", err)
 	}
-	log.Println(URL)
+	// log.Println(URL)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -368,7 +373,7 @@ func getEmail(name string) string {
 		return ""
 	}
 	var g getUserResp
-	log.Println(string(bodyBytes))
+	// log.Println(string(bodyBytes))
 	err = json.Unmarshal(bodyBytes, &g)
 	if err != nil {
 		log.Fatalln("getEmail: Error with unmarshaling response", err)
