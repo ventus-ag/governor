@@ -356,7 +356,7 @@ func getEmail(name string) string {
 	if err != nil {
 		log.Fatalln("getEmail: Error creating request", err)
 	}
-
+	log.Println(URL)
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -364,7 +364,9 @@ func getEmail(name string) string {
 	}
 	defer resp.Body.Close()
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
-
+	if resp.StatusCode != 200 {
+		return ""
+	}
 	var g getUserResp
 	log.Println(string(bodyBytes))
 	err = json.Unmarshal(bodyBytes, &g)
