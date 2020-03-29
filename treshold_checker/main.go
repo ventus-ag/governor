@@ -102,7 +102,7 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	msg := buf.String()
-	log.Println("New msg:", msg)
+	// log.Println("New msg:", msg)
 
 	d := mail{
 		From:    "dmitriy.yarovoy@ventus.ag",

@@ -5,22 +5,24 @@
     <title></title>
 </head>
     <body>
-        <h3>Dear User,</h3>
+        <h4>Dear Client,</h4>
 
-        <p>We see that you have passed treshhold in 60% for:</p>
+        <p>We see that you have passed quota treshhold of 60% for:</p>
 
-        <p>Project: {{.Name}} </p>
-        <br>Resource name: {{.QuotaName}}</br>
-        <br>Available resources: {{.Max}}</br>
-        <br>Currently used: {{.Current}}</br>
+        <p>Project: {{.Name}}<br/>
+        Resource name: {{.QuotaName}}<br/>
+        Available resources: {{.Max}}<br/>
+        Currently used: {{.Current}}
+        </p>
 
-        <p>If you want increase your quota, please create a <a href="https://sportal.ventuscloud.eu/tickets/open-new-ticket">support ticket</a>.</p>
+        <p>If you wish increase your quota, please create a <a href="https://sportal.ventuscloud.eu/tickets/open-new-ticket">support ticket</a>.
+        <br/>Otherwise, just ignore this message.</p>
 
-        <p>If you don't want to increase your quota, just ignore this message.</p>
-
-        <p>Kind regards,</p>
-
-        <p>Your Ventus Cloud Team</p>
+        <p>Note: This e-mail address is not monitored for incoming messages. Please do not reply to it.</p>
+        <h4>
+        Kind regards,<br/>
+        Your Ventus Cloud Team
+        </h4>
     
     </body>
 </html>
