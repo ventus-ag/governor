@@ -79,9 +79,9 @@ func main() {
 		projects := getAllProjects()
 		for _, project := range projects {
 			// // FOR TROUBLESHOOTING
-			if project.ID != "292d78952e584d25b0c71deb2eb06d55" {
-				continue
-			}
+			// if project.ID != "292d78952e584d25b0c71deb2eb06d55" {
+			// 	continue
+			// }
 			client := getEmail(project.Name)
 			log.Println(client)
 
