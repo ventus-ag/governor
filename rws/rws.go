@@ -366,6 +366,7 @@ func getEmail(name string) string {
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 
 	var g getUserResp
+	log.Println(string(bodyBytes))
 	err = json.Unmarshal(bodyBytes, &g)
 	if err != nil {
 		log.Fatalln("getEmail: Error with unmarshaling response", err)
