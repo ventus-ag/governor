@@ -25,13 +25,13 @@ spec:
           - name: VENTUS_EMAIL_PASSWORD
             valueFrom:
                secretKeyRef:
-                 name: email-credentials
+                 name: ventus-email-password
                  key: ventus-email-password
           - name: NO_REPLY_EMAIL
             valueFrom:
                secretKeyRef:
-                 name: email-credentials
-                 key: no-reply-email   
+                 name: ventus-email-password
+                 key: email   
         ports:
         - containerPort: 8080
         imagePullPolicy: Always
