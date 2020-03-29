@@ -27,11 +27,11 @@ spec:
                secretKeyRef:
                  name: email-credentials
                  key: email-password
-          - name: NO_REPLY_EMAIL
+          - name: VENTUS_EMAIL
             valueFrom:
                secretKeyRef:
                  name: email-credentials
-                 key: email-address   
+                 key: email-address
         ports:
         - containerPort: 8080
         imagePullPolicy: Always

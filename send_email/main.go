@@ -76,7 +76,7 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	pwd := os.Getenv("VENTUS_EMAIL_PASSWORD")
-	from := os.Getenv("NO_REPLY_EMAIL")
+	from := os.Getenv("VENTUS_EMAIL")
 	auth := LoginAuth(from, pwd)
 	to := data.Data.Email
 	msg := "From: " + from + "\n" +

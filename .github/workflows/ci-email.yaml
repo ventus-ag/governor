@@ -49,7 +49,7 @@ jobs:
       with:
         namespace: 'default'
         secret-type: 'generic'
-        arguments:  --from-literal=email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }} --from-literal=email-address=${{ secrets.NO_REPLY_EMAIL }}
+        arguments:  --from-literal=email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }} --from-literal=email-address=${{ secrets.VENTUS_EMAIL }}
         secret-name: email-credentials
     - name: Deploy
       run: |
