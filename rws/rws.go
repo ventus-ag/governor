@@ -124,7 +124,7 @@ func main() {
 						Treshold:  60,
 						QuotaName: "Cores",
 						Name:      d.Name,
-						Email:     "masterhorn89@gmail.com",
+						Email:     d.Email,
 						ID:        d.ID,
 						Date:      time.Now().Format(layoutUS),
 					}
@@ -151,7 +151,7 @@ func main() {
 						Treshold:  60,
 						QuotaName: "RAM",
 						Name:      d.Name,
-						Email:     "masterhorn89@gmail.com",
+						Email:     d.Email,
 						ID:        d.ID,
 						Date:      time.Now().Format(layoutUS),
 					}
@@ -178,7 +178,7 @@ func main() {
 						Treshold:  60,
 						QuotaName: "Instances",
 						Name:      d.Name,
-						Email:     "masterhorn89@gmail.com",
+						Email:     d.Email,
 						ID:        d.ID,
 						Date:      time.Now().Format(layoutUS),
 					}
