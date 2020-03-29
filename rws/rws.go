@@ -57,6 +57,12 @@ type stateValue struct {
 	Date string `json:"date"`
 }
 
+type getUserResp struct {
+	PortalID    string `json:"portal_id"`
+	PortalName  string `json:"portal_name"`
+	PortalEmail string `json:"portal_email"`
+}
+
 var openstackOpts = gophercloud.AuthOptions{
 	IdentityEndpoint: os.Getenv("OPENSTACK_IDENTITY_ENDPOINT"),
 	DomainName:       "Default",
@@ -64,6 +70,8 @@ var openstackOpts = gophercloud.AuthOptions{
 	Username:         os.Getenv("OPENSTACK_USERNAME"),
 	Password:         os.Getenv("OPENSTACK_PASSWORD"),
 }
+
+var projectURL = "http://gvr-get-client/get?name="
 
 func main() {
 
@@ -74,6 +82,9 @@ func main() {
 			if project.ID != "292d78952e584d25b0c71deb2eb06d55" {
 				continue
 			}
+			userEmail := getEmail(project.Name)
+			log.Println(userEmail)
+
 			limits := getLimits(project.ID)
 			d := data{
 				MaxCores:         limits.MaxTotalCores,
@@ -337,4 +348,28 @@ func projectSaveState(id string, mail bool, quota string) {
 	if resp.StatusCode == 201 {
 		log.Println("Successfully persisted state.")
 	}
+}
+
+func getEmail(name string) string {
+	URL := projectURL + name
+	req, err := http.NewRequest("GET", URL, nil)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	defer resp.Body.Close()
+	bodyBytes, err := ioutil.ReadAll(resp.Body)
+
+	var g getUserResp
+	err = json.Unmarshal(bodyBytes, &g)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	userEmail := g.PortalEmail
+	return userEmail
 }
