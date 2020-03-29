@@ -71,7 +71,7 @@ var openstackOpts = gophercloud.AuthOptions{
 	Password:         os.Getenv("OPENSTACK_PASSWORD"),
 }
 
-var projectURL = "http://gvr-get-client/get?name="
+var projectURL = "http://localhost:3500/v1.0/invoke/gvr-get-client/method/get?name="
 
 func main() {
 
@@ -82,8 +82,8 @@ func main() {
 			if project.ID != "292d78952e584d25b0c71deb2eb06d55" {
 				continue
 			}
-			// userEmail := getEmail(project.Name)
-			// log.Println(userEmail)
+			userEmail := getEmail(project.Name)
+			log.Println(userEmail)
 
 			limits := getLimits(project.ID)
 			d := data{
