@@ -31,7 +31,7 @@ spec:
             valueFrom:
                secretKeyRef:
                  name: email-credentials 
-                 key: no-reply-email           
+                 key: no-reply-email     
         ports:
         - containerPort: 8080
         imagePullPolicy: Always
