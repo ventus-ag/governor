@@ -37,8 +37,8 @@ type data struct {
 }
 
 type email struct {
-	Max       int    `json:"maxCores"`
-	Current   int    `json:"currentCores"`
+	Max       int    `json:"max"`
+	Current   int    `json:"current"`
 	Treshold  int    `json:"treshold"`
 	QuotaName string `json:"quota_name"`
 	Email     string `json:"email"`
@@ -90,11 +90,11 @@ func main() {
 			}
 
 			// FOR TROUBLESHOOTING
-			if d.ID == "292d78952e584d25b0c71deb2eb06d55" {
-				d.CurrentCores = 30
-				d.CurrentRAM = 40000
-				d.CurrentInstances = 8
-			}
+			// if d.ID == "292d78952e584d25b0c71deb2eb06d55" {
+			// 	d.CurrentCores = 30
+			// 	d.CurrentRAM = 40000
+			// 	d.CurrentInstances = 8
+			// }
 
 			// CPU
 			if verifyTreshold(d.MaxCores, d.CurrentCores, d.Treshold) {

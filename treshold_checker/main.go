@@ -113,8 +113,6 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 
 	publish(d)
 
-	log.Println("Payload: \n" + string(body))
-
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	log.Println("Published new e-mail")

@@ -76,13 +76,14 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatalln(err)
 	}
 
+	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	env := os.Getenv("VENTUS_EMAIL_PASSWORD")
 	auth := LoginAuth("dmitriy.yarovoy@ventus.ag", env)
 	from := data.Data.From
 	to := data.Data.Email
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +
-		"Subject: " + data.Data.Subject + "\n\n" +
+		"Subject: " + data.Data.Subject + "\n" + mime + "\n" +
 		data.Data.Message
 
 	err = smtp.SendMail("smtp.office365.com:587", auth,
