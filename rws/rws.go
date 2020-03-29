@@ -82,10 +82,10 @@ func main() {
 			if project.ID != "292d78952e584d25b0c71deb2eb06d55" {
 				continue
 			}
-			userEmail := getEmail(project.Name)
-			log.Println(userEmail)
+			client := getEmail(project.Name)
+			log.Println(client)
 
-			if userEmail == "" {
+			if client.PortalEmail == "" {
 				log.Println("There is no e-mail for this Project, skipping")
 				continue
 			}
@@ -95,8 +95,8 @@ func main() {
 				MaxCores:         limits.MaxTotalCores,
 				CurrentCores:     limits.TotalCoresUsed,
 				Treshold:         60,
-				Name:             project.Name,
-				Email:            userEmail,
+				Name:             client.PortalName,
+				Email:            client.PortalEmail,
 				ID:               project.ID,
 				Date:             time.Now().Format(layoutUS),
 				MaxRAM:           limits.MaxTotalRAMSize,
@@ -355,7 +355,7 @@ func projectSaveState(id string, mail bool, quota string) {
 	}
 }
 
-func getEmail(name string) string {
+func getEmail(name string) getUserResp {
 	URL := projectURL + name
 	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
@@ -368,16 +368,18 @@ func getEmail(name string) string {
 		log.Fatalln("getEmail: Error sending http request", err)
 	}
 	defer resp.Body.Close()
+
+	var g getUserResp
+
 	bodyBytes, err := ioutil.ReadAll(resp.Body)
 	if resp.StatusCode != 200 {
-		return ""
+		return g
 	}
-	var g getUserResp
+
 	// log.Println(string(bodyBytes))
 	err = json.Unmarshal(bodyBytes, &g)
 	if err != nil {
 		log.Fatalln("getEmail: Error with unmarshaling response", err)
 	}
-	userEmail := g.PortalEmail
-	return userEmail
+	return g
 }
