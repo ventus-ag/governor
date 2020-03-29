@@ -67,7 +67,6 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// log.Println(string(body))
 	var data event
 
 	err = json.Unmarshal(body, &data)
