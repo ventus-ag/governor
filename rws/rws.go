@@ -123,9 +123,9 @@ func main() {
 						Current:   d.CurrentCores,
 						Treshold:  60,
 						QuotaName: "Cores",
-						Name:      project.Name,
+						Name:      d.Name,
 						Email:     "masterhorn89@gmail.com",
-						ID:        project.ID,
+						ID:        d.ID,
 						Date:      time.Now().Format(layoutUS),
 					}
 					publish(e)
@@ -150,9 +150,9 @@ func main() {
 						Current:   d.CurrentRAM,
 						Treshold:  60,
 						QuotaName: "RAM",
-						Name:      project.Name,
+						Name:      d.Name,
 						Email:     "masterhorn89@gmail.com",
-						ID:        project.ID,
+						ID:        d.ID,
 						Date:      time.Now().Format(layoutUS),
 					}
 					publish(e)
@@ -177,9 +177,9 @@ func main() {
 						Current:   d.CurrentInstances,
 						Treshold:  60,
 						QuotaName: "Instances",
-						Name:      project.Name,
+						Name:      d.Name,
 						Email:     "masterhorn89@gmail.com",
-						ID:        project.ID,
+						ID:        d.ID,
 						Date:      time.Now().Format(layoutUS),
 					}
 					publish(e)
