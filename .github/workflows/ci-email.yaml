@@ -40,8 +40,8 @@ jobs:
       with:
         namespace: 'default'
         secret-type: 'generic'
-        arguments:  --from-literal=ventus-email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }} 
-        secret-name: ventus-email-password 
+        arguments:  --from-literal=ventus-email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }} --from-literal=no-reply-email=${{ secrets.NO_REPLY_EMAIL }}
+        secret-name: email-credentials 
     - name: Set imagePullSecret
       uses: azure/k8s-create-secret@v1
       with:

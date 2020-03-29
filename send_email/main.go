@@ -18,7 +18,6 @@ const (
 )
 
 type mail struct {
-	From    string `json:"from"`
 	Message string `json:"message"`
 	Subject string `json:"subject"`
 	Email   string `json:"email"`
@@ -77,9 +76,9 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
-	env := os.Getenv("VENTUS_EMAIL_PASSWORD")
-	auth := LoginAuth("dmitriy.yarovoy@ventus.ag", env)
-	from := data.Data.From
+	pwd := os.Getenv("VENTUS_EMAIL_PASSWORD")
+	from := os.Getenv("NO_REPLY_EMAIL")
+	auth := LoginAuth(from, pwd)
 	to := data.Data.Email
 	msg := "From: " + from + "\n" +
 		"To: " + to + "\n" +

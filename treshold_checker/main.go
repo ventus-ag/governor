@@ -29,7 +29,6 @@ type data struct {
 }
 
 type mail struct {
-	From    string `json:"from"`
 	Message string `json:"message"`
 	Subject string `json:"subject"`
 	Email   string `json:"email"`
@@ -105,7 +104,6 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 	// log.Println("New msg:", msg)
 
 	d := mail{
-		From:    "dmitriy.yarovoy@ventus.ag",
 		Email:   data.Data.Email,
 		Subject: subject,
 		Message: msg,
