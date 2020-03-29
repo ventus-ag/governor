@@ -82,8 +82,8 @@ func main() {
 			if project.ID != "292d78952e584d25b0c71deb2eb06d55" {
 				continue
 			}
-			userEmail := getEmail(project.Name)
-			log.Println(userEmail)
+			// userEmail := getEmail(project.Name)
+			// log.Println(userEmail)
 
 			limits := getLimits(project.ID)
 			d := data{
