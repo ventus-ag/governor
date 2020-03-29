@@ -34,14 +34,7 @@ jobs:
       with:
         method: kubeconfig
         kubeconfig: ${{ secrets.KUBE_CONFIG }}
-      id: setcontext   
-    - name: Set OpenstackPullSecrets
-      uses: azure/k8s-create-secret@v1
-      with:
-        namespace: 'default'
-        secret-type: 'generic'
-        arguments:  --from-literal=ventus-email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }} --from-literal=email=${{ secrets.NO_REPLY_EMAIL }}
-        secret-name: ventus-email-password 
+      id: setcontext    
     - name: Set imagePullSecret
       uses: azure/k8s-create-secret@v1
       with:
@@ -51,6 +44,13 @@ jobs:
         container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
         secret-name: 'docker-registry-secret'
       id: create-secret   
+    - name: Set OpenstackPullSecrets
+      uses: azure/k8s-create-secret@v1
+      with:
+        namespace: 'default'
+        secret-type: 'generic'
+        arguments:  --from-literal=ventus-email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }} --from-literal=email=${{ secrets.NO_REPLY_EMAIL }}
+        secret-name: ventus-email-password
     - name: Deploy
       run: |
         SHA=${GITHUB_SHA:0:7}
