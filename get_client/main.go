@@ -27,14 +27,15 @@ func main() {
 
 func get(w http.ResponseWriter, r *http.Request) {
 	projectName := r.FormValue("name")
-	// fields := strings.Fields(testProjectName)
 	fields := strings.Fields(projectName)
 	id := fields[len(fields)-1]
-	var name string
-	for i := 0; i < len(fields)-2; i++ {
-		name = name + fields[i] + " "
-	}
-	name = strings.TrimSuffix(name, " ")
+	// var name string
+	// for i := 0; i < len(fields)-2; i++ {
+	// 	name = name + fields[i] + " "
+	// }
+	// name = strings.TrimSuffix(name, " ")
+	log.Println("New request for: " + projectName)
+	log.Println("ID: " + id)
 	resp := getClient(id)
 	log.Println(resp)
 
