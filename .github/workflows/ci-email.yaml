@@ -49,8 +49,8 @@ jobs:
       with:
         namespace: 'default'
         secret-type: 'generic'
-        arguments:  --from-literal=ventus-email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }} --from-literal=email=${{ secrets.NO_REPLY_EMAIL }}
-        secret-name: ventus-email-password
+        arguments:  --from-literal=email-password=${{ secrets.VENTUS_EMAIL_PASSWORD }} --from-literal=email-address=${{ secrets.NO_REPLY_EMAIL }}
+        secret-name: email-credentials
     - name: Deploy
       run: |
         SHA=${GITHUB_SHA:0:7}
