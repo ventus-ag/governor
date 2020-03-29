@@ -6,7 +6,7 @@ on:
     paths:
     - 'send_email/*'
     - '.github/workflows/ci-email.yaml'
-#test
+
 jobs:
 #building app
   build:
