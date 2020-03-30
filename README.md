@@ -15,7 +15,7 @@ Governer is enable by default for all projects in Ventus Cloud. To see how it wo
 
 - Create project in [Ventus Cloud portal](https://sportal.ventuscloud.eu/). 
 
-![](../img/sing_up.png)
+![](img/sing_up.png)
 
 - Project must be created through the `sportal.ventuscloud.eu` in order for the project name to be *Name - id*, for example: `Test Ventus - 123456`
 
