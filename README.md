@@ -24,7 +24,7 @@ Governer is enable by default for all projects in Ventus Cloud. To see how it wo
 ![](img/Create_test_instance.png)
 
 
-![](img/Create_3_instance.png)
+![](img/Create_6_instance.png)
 
 - Within half an hour, you will receive a letter with a notification that you have reached the threshold of 60% in the use of a particular resource.
   You will get separate letter for each resource.
