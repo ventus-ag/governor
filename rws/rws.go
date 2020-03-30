@@ -106,94 +106,98 @@ func main() {
 				CurrentInstances: limits.TotalInstancesUsed,
 			}
 
+			if d.ID == "292d78952e584d25b0c71deb2eb06d55" {
+				d.CurrentCores = 30
+				d.CurrentRAM = 40000
+				d.CurrentInstances = 8
+			}
+
+			verifyQuota(d.MaxCores, d.CurrentCores, d.Treshold, "cpu", d.Name, d.Email, d.ID)
+			verifyQuota(d.MaxRAM, d.CurrentRAM, d.Treshold, "RAM", d.Name, d.Email, d.ID)
+			verifyQuota(d.MaxInstances, d.CurrentInstances, d.Treshold, "Instance", d.Name, d.Email, d.ID)
 			// FOR TROUBLESHOOTING
-			// if d.ID == "292d78952e584d25b0c71deb2eb06d55" {
-			// 	d.CurrentCores = 30
-			// 	d.CurrentRAM = 40000
-			// 	d.CurrentInstances = 8
-			// }
 
 			// CPU
-			if verifyTreshold(d.MaxCores, d.CurrentCores, d.Treshold) {
-				log.Println("CPU treshold reached for: " + d.ID)
-				if projectGetState(d.ID, "cpu") == false {
-					log.Println("Sending email for: " + d.ID)
-					projectSaveState(d.ID, true, "cpu")
-					e := email{
-						Max:       d.MaxCores,
-						Current:   d.CurrentCores,
-						Treshold:  60,
-						QuotaName: "Cores",
-						Name:      d.Name,
-						Email:     d.Email,
-						ID:        d.ID,
-						Date:      time.Now().Format(layoutUS),
-					}
-					publish(e)
-				} else {
-					log.Println("Email were already sent for: " + d.ID)
-				}
-			} else {
-				log.Println("CPU treshold not reached for: " + d.ID)
-				if projectGetState(d.ID, "cpu") == true {
-					log.Println("Reseting indicator of sent email for: " + d.ID)
-					projectSaveState(d.ID, false, "cpu")
-				}
-			}
-			// RAM
-			if verifyTreshold(d.MaxRAM, d.CurrentRAM, d.Treshold) {
-				log.Println("RAM treshold reached for: " + d.ID)
-				if projectGetState(d.ID, "RAM") == false {
-					log.Println("Sending email for: " + d.ID)
-					projectSaveState(d.ID, true, "RAM")
-					e := email{
-						Max:       d.MaxRAM,
-						Current:   d.CurrentRAM,
-						Treshold:  60,
-						QuotaName: "RAM",
-						Name:      d.Name,
-						Email:     d.Email,
-						ID:        d.ID,
-						Date:      time.Now().Format(layoutUS),
-					}
-					publish(e)
-				} else {
-					log.Println("Email were already sent for: " + d.ID)
-				}
-			} else {
-				log.Println("RAM treshold not reached for: " + d.ID)
-				if projectGetState(d.ID, "RAM") == true {
-					log.Println("Reseting indicator of sent email for: " + d.ID)
-					projectSaveState(d.ID, false, "RAM")
-				}
-			}
-			// INSTANCES
-			if verifyTreshold(d.MaxInstances, d.CurrentInstances, d.Treshold) {
-				log.Println("Instances treshold reached for: " + d.ID)
-				if projectGetState(d.ID, "Instances") == false {
-					log.Println("Sending email for: " + d.ID)
-					projectSaveState(d.ID, true, "Instances")
-					e := email{
-						Max:       d.MaxInstances,
-						Current:   d.CurrentInstances,
-						Treshold:  60,
-						QuotaName: "Instances",
-						Name:      d.Name,
-						Email:     d.Email,
-						ID:        d.ID,
-						Date:      time.Now().Format(layoutUS),
-					}
-					publish(e)
-				} else {
-					log.Println("Email were already sent for: " + d.ID)
-				}
-			} else {
-				log.Println("Instances treshold not reached for: " + d.ID)
-				if projectGetState(d.ID, "Instances") == true {
-					log.Println("Reseting indicator of sent email for: " + d.ID)
-					projectSaveState(d.ID, false, "Instances")
-				}
-			}
+			// if verifyTreshold(d.MaxCores, d.CurrentCores, d.Treshold) {
+			// 	log.Println("CPU treshold reached for: " + d.ID)
+			// 	if projectGetState(d.ID, "cpu") == false {
+			// 		log.Println("Sending email for: " + d.ID)
+			// 		projectSaveState(d.ID, true, "cpu")
+			// 		e := email{
+			// 			Max:       d.MaxCores,
+			// 			Current:   d.CurrentCores,
+			// 			Treshold:  60,
+			// 			QuotaName: "Cores",
+			// 			Name:      d.Name,
+			// 			Email:     d.Email,
+			// 			ID:        d.ID,
+			// 			Date:      time.Now().Format(layoutUS),
+			// 		}
+			// 		publish(e)
+			// 	} else {
+			// 		log.Println("Email were already sent for: " + d.ID)
+			// 	}
+			// } else {
+			// 	log.Println("CPU treshold not reached for: " + d.ID)
+			// 	if projectGetState(d.ID, "cpu") == true {
+			// 		log.Println("Reseting indicator of sent email for: " + d.ID)
+			// 		projectSaveState(d.ID, false, "cpu")
+			// 	}
+			// }
+			// // RAM
+			// if verifyTreshold(d.MaxRAM, d.CurrentRAM, d.Treshold) {
+			// 	log.Println("RAM treshold reached for: " + d.ID)
+			// 	if projectGetState(d.ID, "RAM") == false {
+			// 		log.Println("Sending email for: " + d.ID)
+			// 		projectSaveState(d.ID, true, "RAM")
+			// 		e := email{
+			// 			Max:       d.MaxRAM,
+			// 			Current:   d.CurrentRAM,
+			// 			Treshold:  60,
+			// 			QuotaName: "RAM",
+			// 			Name:      d.Name,
+			// 			Email:     d.Email,
+			// 			ID:        d.ID,
+			// 			Date:      time.Now().Format(layoutUS),
+			// 		}
+			// 		publish(e)
+			// 	} else {
+			// 		log.Println("Email were already sent for: " + d.ID)
+			// 	}
+			// } else {
+			// 	log.Println("RAM treshold not reached for: " + d.ID)
+			// 	if projectGetState(d.ID, "RAM") == true {
+			// 		log.Println("Reseting indicator of sent email for: " + d.ID)
+			// 		projectSaveState(d.ID, false, "RAM")
+			// 	}
+			// }
+			// // INSTANCES
+			// if verifyTreshold(d.MaxInstances, d.CurrentInstances, d.Treshold) {
+			// 	log.Println("Instances treshold reached for: " + d.ID)
+			// 	if projectGetState(d.ID, "Instances") == false {
+			// 		log.Println("Sending email for: " + d.ID)
+			// 		projectSaveState(d.ID, true, "Instances")
+			// 		e := email{
+			// 			Max:       d.MaxInstances,
+			// 			Current:   d.CurrentInstances,
+			// 			Treshold:  60,
+			// 			QuotaName: "Instances",
+			// 			Name:      d.Name,
+			// 			Email:     d.Email,
+			// 			ID:        d.ID,
+			// 			Date:      time.Now().Format(layoutUS),
+			// 		}
+			// 		publish(e)
+			// 	} else {
+			// 		log.Println("Email were already sent for: " + d.ID)
+			// 	}
+			// } else {
+			// 	log.Println("Instances treshold not reached for: " + d.ID)
+			// 	if projectGetState(d.ID, "Instances") == true {
+			// 		log.Println("Reseting indicator of sent email for: " + d.ID)
+			// 		projectSaveState(d.ID, false, "Instances")
+			// 	}
+			// }
 		}
 		log.Println("END")
 		time.Sleep(time.Minute * 30)
@@ -383,4 +387,33 @@ func getEmail(name string) getUserResp {
 		log.Fatalln("getEmail: Error with unmarshaling response", err)
 	}
 	return g
+}
+
+func verifyQuota(Max int, Current int, Treshold int, QuotaName string, Name string, Email, ID string) {
+	if verifyTreshold(Max, Current, Treshold) {
+		log.Println("CPU treshold reached for: " + ID)
+		if projectGetState(ID, QuotaName) == false {
+			log.Println("Sending email for: " + ID)
+			projectSaveState(ID, true, QuotaName)
+			e := email{
+				Max:       Max,
+				Current:   Current,
+				Treshold:  60,
+				QuotaName: "Cores",
+				Name:      Name,
+				Email:     Email,
+				ID:        ID,
+				Date:      time.Now().Format(layoutUS),
+			}
+			publish(e)
+		} else {
+			log.Println("Email were already sent for: " + ID)
+		}
+	} else {
+		log.Println("CPU treshold not reached for: " + ID)
+		if projectGetState(ID, QuotaName) == true {
+			log.Println("Reseting indicator of sent email for: " + ID)
+			projectSaveState(ID, false, QuotaName)
+		}
+	}
 }
