@@ -8,7 +8,7 @@ Every thirty minutes Governor getting three type of resources (CPU Cores, RAM, I
 
 ## Get Started using Governor
 
-{% include alert.html type="info" title="Note:" content="Currently, the Governor works only on stage." %}
+# Note: Currently, the Governor works only on stage.
 
 
 Governer is enable by default for all projects in Ventus Cloud. To see how it works:
