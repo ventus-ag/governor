@@ -20,13 +20,7 @@ spec:
     spec:
       containers:
       - name: treshhold-checker
-        image: IMG
-        env:
-          - name: VENTUS_EMAIL_PASSWORD
-            valueFrom:
-               secretKeyRef:
-                 name: ventus-email-password
-                 key: ventus-email-password        
+        image: IMG   
         ports:
         - containerPort: 8080
         imagePullPolicy: Always

@@ -19,7 +19,7 @@ Governer is enable by default for all projects in Ventus Cloud. To see how it wo
 
 - Project must be created through the `sportal.ventuscloud.eu` in order for the project name to be *Name - id*, for example: `Test Ventus - 123456`
 
-- Set up your project to use one of the resources (CPU Cores, RAM or Instances) to 60% or more. For example, you can create 3-6 instances with configuration `VC-8`
+- Set up your project to use one of the resources (CPU Cores, RAM or Instances) to 60% or more. For example, you can create 4-6 instances with configuration `VC-8`
 
 ![](img/Create_test_instance.png)
 
