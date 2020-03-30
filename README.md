@@ -31,4 +31,4 @@ Governer is enable by default for all projects in Ventus Cloud. To see how it wo
 
   In the case that your project passes the threshold for using less than 60% of resourse, for example, you will not increase the number of Instances, but increase their size, the information that you received a notification will be updated. And when you pass the threshold of 60% again - you will receive a notification letter.
 
-![](img/email_notification.png)
+![](img/Email_notification.png)
