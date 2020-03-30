@@ -86,10 +86,6 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 
 	subject := "Ventus Cloud Support - Governor"
 
-	// msg := "Dear User. We would like to inform you, that on project: " + data.Data.Name +
-	// 	" you have passed treshhold in 60% of " + data.Data.QuotaName + " and using " + strconv.Itoa(data.Data.Current) +
-	// 	" of " + strconv.Itoa(data.Data.Max) + " cores. If you want, you can scale up your resources here."
-
 	t, err := template.ParseFiles(templateFileName)
 	if err != nil {
 		log.Fatalln(err)
@@ -101,7 +97,6 @@ func messageHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	msg := buf.String()
-	// log.Println("New msg:", msg)
 
 	d := mail{
 		Email:   data.Data.Email,
