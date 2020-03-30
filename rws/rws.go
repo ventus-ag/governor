@@ -78,10 +78,10 @@ func main() {
 	for true {
 		projects := getAllProjects()
 		for _, project := range projects {
-			// // FOR TROUBLESHOOTING
-			// if project.ID != "292d78952e584d25b0c71deb2eb06d55" {
-			// 	continue
-			// }
+			// FOR TROUBLESHOOTING
+			if project.ID != "292d78952e584d25b0c71deb2eb06d55" {
+				continue
+			}
 			client := getEmail(project.Name)
 			log.Println(client)
 
@@ -92,11 +92,12 @@ func main() {
 
 			limits := getLimits(project.ID)
 			d := data{
-				MaxCores:         limits.MaxTotalCores,
-				CurrentCores:     limits.TotalCoresUsed,
-				Treshold:         60,
-				Name:             client.PortalName,
-				Email:            client.PortalEmail,
+				MaxCores:     limits.MaxTotalCores,
+				CurrentCores: limits.TotalCoresUsed,
+				Treshold:     60,
+				Name:         client.PortalName,
+				// Email:            client.PortalEmail,
+				Email:            "masterhorn89@gmail.com",
 				ID:               project.ID,
 				Date:             time.Now().Format(layoutUS),
 				MaxRAM:           limits.MaxTotalRAMSize,
