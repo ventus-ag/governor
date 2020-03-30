@@ -21,7 +21,7 @@ Governer is enable by default for all projects in Ventus Cloud. To see how it wo
 
 - Set up your project to use one of the resources (CPU Cores, RAM or Instances) to 60% or more. For example, you can create 3-6 instances with configuration `VC-8`
 
-![](../img/Create_test_instance.png)
+![](C:/Users/DmtrY/go/src/github.com/ventus-ag/governor/img/Create_test_instance.png)
 
 
 ![](../img/Create_3_instance.png)
