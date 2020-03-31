@@ -92,18 +92,11 @@ func main() {
 
 			limits := getLimits(project.ID)
 			d := data{
-				MaxCores:     limits.MaxTotalCores,
-				CurrentCores: limits.TotalCoresUsed,
-				Treshold:     60,
-				Name:         client.PortalName,
+				Treshold: 60,
+				Name:     client.PortalName,
 				// Email:            client.PortalEmail,
-				Email:            "masterhorn89@gmail.com",
-				ID:               project.ID,
-				Date:             time.Now().Format(layoutUS),
-				MaxRAM:           limits.MaxTotalRAMSize,
-				CurrentRAM:       limits.TotalRAMUsed,
-				MaxInstances:     limits.MaxTotalInstances,
-				CurrentInstances: limits.TotalInstancesUsed,
+				Email: "masterhorn89@gmail.com",
+				ID:    project.ID,
 			}
 
 			// FOR TROUBLESHOOTING
@@ -112,9 +105,11 @@ func main() {
 			// 	d.CurrentRAM = 40000
 			// 	d.CurrentInstances = 8
 			// }
+
 			verifyQuota(limits.MaxTotalCores, limits.TotalCoresUsed, "CPU", d)
 			verifyQuota(limits.MaxTotalRAMSize, limits.TotalRAMUsed, "RAM", d)
 			verifyQuota(limits.MaxTotalInstances, limits.TotalInstancesUsed, "Instance", d)
+
 		}
 		log.Println("END")
 		time.Sleep(time.Minute * 30)
@@ -304,4 +299,33 @@ func getEmail(name string) getUserResp {
 		log.Fatalln("getEmail: Error with unmarshaling response", err)
 	}
 	return g
+}
+
+func verifyQuota(max int, current int, quotaName string, d data) {
+	if verifyTreshold(max, current, d.Treshold) {
+		log.Println("CPU treshold reached for: " + d.ID)
+		if projectGetState(d.ID, quotaName) == false {
+			log.Println("Sending email for: " + d.ID)
+			projectSaveState(d.ID, true, quotaName)
+			e := email{
+				Max:       max,
+				Current:   current,
+				Treshold:  d.Treshold,
+				QuotaName: quotaName,
+				Name:      d.Name,
+				Email:     d.Email,
+				ID:        d.ID,
+				Date:      time.Now().Format(layoutUS),
+			}
+			publish(e)
+		} else {
+			log.Println("Email were already sent for: " + d.ID)
+		}
+	} else {
+		log.Println("CPU treshold not reached for: " + d.ID)
+		if projectGetState(d.ID, quotaName) == true {
+			log.Println("Reseting indicator of sent email for: " + d.ID)
+			projectSaveState(d.ID, false, quotaName)
+		}
+	}
 }
