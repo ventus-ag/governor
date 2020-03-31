@@ -1,6 +1,6 @@
 name: ci-get-client
 on:
-  pull_request:
+  push:
     branches:
     - master
     paths:

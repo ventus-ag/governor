@@ -1,6 +1,6 @@
 name: ci-rws
 on:
-  pull_request:
+  push:
     branches:
     - master
     paths:
