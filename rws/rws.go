@@ -112,7 +112,7 @@ func main() {
 				d.CurrentInstances = 8
 			}
 
-			verifyQuota(d.MaxCores, d.CurrentCores, d.Treshold, "cpu", d.Name, d.Email, d.ID)
+			verifyQuota(d.MaxCores, d.CurrentCores, d.Treshold, "CPU", d.Name, d.Email, d.ID)
 			verifyQuota(d.MaxRAM, d.CurrentRAM, d.Treshold, "RAM", d.Name, d.Email, d.ID)
 			verifyQuota(d.MaxInstances, d.CurrentInstances, d.Treshold, "Instance", d.Name, d.Email, d.ID)
 			// FOR TROUBLESHOOTING
@@ -399,7 +399,7 @@ func verifyQuota(Max int, Current int, Treshold int, QuotaName string, Name stri
 				Max:       Max,
 				Current:   Current,
 				Treshold:  60,
-				QuotaName: "Cores",
+				QuotaName: QuotaName,
 				Name:      Name,
 				Email:     Email,
 				ID:        ID,
