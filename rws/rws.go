@@ -100,11 +100,11 @@ func main() {
 			}
 
 			// FOR TROUBLESHOOTING
-			if d.ID == "292d78952e584d25b0c71deb2eb06d55" {
-				limits.TotalCoresUsed = 30
-				limits.TotalRAMUsed = 40000
-				limits.TotalInstancesUsed = 8
-			}
+			// if d.ID == "292d78952e584d25b0c71deb2eb06d55" {
+			// 	limits.TotalCoresUsed = 30
+			// 	limits.TotalRAMUsed = 40000
+			// 	limits.TotalInstancesUsed = 8
+			// }
 
 			verifyQuota(limits.MaxTotalCores, limits.TotalCoresUsed, "CPU", d)
 			verifyQuota(limits.MaxTotalRAMSize, limits.TotalRAMUsed, "RAM", d)
