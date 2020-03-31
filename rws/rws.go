@@ -101,9 +101,9 @@ func main() {
 
 			// FOR TROUBLESHOOTING
 			if d.ID == "292d78952e584d25b0c71deb2eb06d55" {
-				d.CurrentCores = 30
-				d.CurrentRAM = 40000
-				d.CurrentInstances = 8
+				limits.TotalCoresUsed = 30
+				limits.TotalRAMUsed = 40000
+				limits.TotalInstancesUsed = 8
 			}
 
 			verifyQuota(limits.MaxTotalCores, limits.TotalCoresUsed, "CPU", d)
